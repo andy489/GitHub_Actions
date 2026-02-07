@@ -22,5 +22,13 @@
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.jsx", "**/*.test.js", "**/*.spec.jsx", "**/*.spec.js"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
