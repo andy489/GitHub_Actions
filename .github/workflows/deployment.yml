@@ -20,6 +20,7 @@ jobs:
           cd second-action-react-demo
           npm test
   deploy:
+    needs: test
     runs-on: macos-latest
     steps:
       - name: Get code
