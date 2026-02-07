@@ -8,11 +8,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd second-action-react-demo 
+          cd third-action-react-demo 
           npm ci
       - name: Lint
         run: |
-          cd second-action-react-demo 
+          cd third-action-react-demo 
           npm run lint
   test:
     runs-on: macos-latest
@@ -21,11 +21,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd second-action-react-demo 
+          cd third-action-react-demo 
           npm ci
       - name: Test code
         run: |
-          cd second-action-react-demo 
+          cd third-action-react-demo 
           npm run test 
   deploy: 
     runs-on: macos-latest
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd second-action-react-demo 
+          cd third-action-react-demo 
           npm ci
       - name: Deployment
         run: echo "Deploying..."
