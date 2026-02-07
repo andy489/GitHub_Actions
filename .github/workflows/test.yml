@@ -11,7 +11,9 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd second-action-react-demp
+          rm -rf node_modules  # Clean any cached modules
+          npm ci --verbose  # Add verbose flag for debugging
       - name: Run tests
         run: npm test
-        
