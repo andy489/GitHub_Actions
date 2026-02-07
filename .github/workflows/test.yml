@@ -16,4 +16,6 @@ jobs:
           rm -rf node_modules  # Clean any cached modules
           npm ci --verbose  # Add verbose flag for debugging
       - name: Run tests
-        run: npm test
+        run: |
+          cd second-action-react-demo
+          npm test
