@@ -17,6 +17,7 @@ jobs:
           cd events-deep-dive
           npm run test 
       - name: Build code
+        run: |
           cd events-deep-dive
           npm run Build
       - name:
