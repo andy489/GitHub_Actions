@@ -11,19 +11,15 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd events-deep-dive
+          cd job-artifacts
           npm ci
       - name: Lint code
         run: |
-          cd events-deep-dive
+          cd job-artifacts
           npm run lint 
-      # - name: Install npm
-      #   run: |
-      #     cd events-deep-dive
-      #     npm install 
       - name: Test code
         run: |
-          cd events-deep-dive
+          cd job-artifacts
           npm install
   build:
     needs: test
@@ -33,11 +29,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          cd events-deep-dive
+          cd job-artifacts
           npm ci
       - name: Build website
         run: |
-          cd events-deep-dive
+          cd job-artifacts
           npm run build
   deploy:
     needs: build
