@@ -19,6 +19,6 @@ jobs:
       - name: Build code
         run: |
           cd events-deep-dive
-          npm run Build
+          npm run build
       - name:
         run: echo "Deploying..."
