@@ -17,8 +17,14 @@ jobs:
         run: |
           cd events-deep-dive
           npm run lint 
+      # - name: Install npm
+      #   run: |
+      #     cd events-deep-dive
+      #     npm install 
       - name: Test code
-        run: npm run test
+        run: |
+          cd events-deep-dive
+          npm install
   build:
     needs: test
     runs-on: ubuntu-latest
