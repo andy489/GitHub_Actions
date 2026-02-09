@@ -24,16 +24,21 @@ module.exports = {
       version: 'detect',
     },
   },
-  // Add this section for test files
   overrides: [
     {
       files: ['**/*.test.jsx', '**/*.test.js', '**/*.spec.jsx', '**/*.spec.js'],
       env: {
-        'vitest/globals': true, // Enable Vitest globals
+        jest: true,  // Change from "vitest/globals" to "jest: true"
       },
-      plugins: ['vitest'],
-      rules: {
-        // You can add test-specific rules here
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
       },
     },
   ],
