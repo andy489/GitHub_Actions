@@ -18,8 +18,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd exec-flow
-          npm install
-          npm install --save-dev eslint-plugin-vitest  # Add Vitest ESLint plugin
           npm ci
       - name: Lint code
         run: |
@@ -75,8 +73,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: exec-flow/dist-files
-          path: exec-flow/dist
+          name: dist-files
+          path: dist-files
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -84,7 +82,7 @@ jobs:
       - name: Get build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: exec-flow/dist-files
+          name: dist-files
       - name: Output contents
         run: ls
       - name: Deploy
