@@ -18,6 +18,8 @@ jobs:
       - name: Install dependencies
         run: |
           cd exec-flow
+          npm install
+          npm install --save-dev eslint-plugin-vitest  # Add Vitest ESLint plugin
           npm ci
       - name: Lint code
         run: |
