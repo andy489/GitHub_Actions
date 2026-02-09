@@ -1,6 +1,6 @@
 name: Matrix Demo
-# on: push
-on: workflow_dispatch
+on: push
+# on: workflow_dispatch
 jobs:
   build:
     continue-on-error: true
@@ -8,6 +8,12 @@ jobs:
       matrix:
         node-version: [12, 14, 16]
         operating-system: [ubuntu-latest, macos-latest]
+        include:
+          - node-version: 18
+            operating-system: ubuntu-latest
+        exclude: 
+          - node-version: 12
+            operating-system: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.operating-system }}
     steps:
       - name: Get Code
