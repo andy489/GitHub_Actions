@@ -16,9 +16,13 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd exec-flow
+          npm ci
       - name: Lint code
-        run: npm run lint
+        run: |
+          cd exec-flow
+          npm run lint
   test:
     runs-on: ubuntu-latest
     steps:
