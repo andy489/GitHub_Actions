@@ -42,6 +42,5 @@ jobs:
     steps:
       - name: Output information
         run: |
-          cd env-var
           echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
-          run: echo "MONGO_DB_NAME: $MONGO_DB_NAME"
+          echo "MONGO_DB_NAME: $MONGO_DB_NAME"
