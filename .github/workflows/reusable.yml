@@ -29,5 +29,6 @@ jobs:
       - name: Output information
         run: echo "Deploying & uploading..."
       - name: Set result output 
-        id: set-results
-        run: echo "::set-output name=step-result::success"
+        id: set-result
+        run: |
+          echo "step-result=success" >> $GITHUB_OUTPUT

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
@@ -51,13 +51,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: test.json
+          path: exec-flow/test.json
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
