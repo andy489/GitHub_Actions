@@ -35,7 +35,8 @@ jobs:
           cd env-var
           npm test
       - name: Output information
-        run: echo "MONGODB_USERNAME- ${{ env.MONGODB_USERNAME }}"
+        run: |
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
   deploy:
     needs: test
     runs-on: ubuntu-latest
