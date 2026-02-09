@@ -1,4 +1,4 @@
-// .eslintrc.js
+// .eslintrc.cjs
 module.exports = {
   env: {
     browser: true,
@@ -16,11 +16,25 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
-    // Add your rules here
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
   },
   settings: {
     react: {
       version: 'detect',
     },
   },
+  // Add this section for test files
+  overrides: [
+    {
+      files: ['**/*.test.jsx', '**/*.test.js', '**/*.spec.jsx', '**/*.spec.js'],
+      env: {
+        'vitest/globals': true, // Enable Vitest globals
+      },
+      plugins: ['vitest'],
+      rules: {
+        // You can add test-specific rules here
+      },
+    },
+  ],
 };
