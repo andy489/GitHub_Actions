@@ -1,0 +1,48 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - main
+      - dev
+env:
+  MONGO_DB_NAME: gha-demo
+jobs:
+  test:
+    env:
+      MONGODB_CLUSTER_ADDRESS: cluster0.hhzeppa.mongodb.net
+      MONGODB_USERNAME: stoevandy_db
+      MONGODB_PASSWORD: Hi9gRBGU5BlCyfQQ
+      PORT: 8080
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          cd env-var
+          npm ci
+      - name: Run server
+        run: |
+          cd env-var
+          npm start & npx wait-on http://127.0.0.1:$PORT
+      - name: Run tests
+        run: |
+          cd env-var
+          npm test
+      - name: Output information
+        # run: echo "MONGODB_USERNAME: $MONGODB_USERNAME"
+        run: echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: |
+          cd env-var
+          echo "MONGODB_USERNAME: ${{ env.MONGODB_USERNAME }}"
+          run: echo "MONGO_DB_NAME: $MONGO_DB_NAME"
