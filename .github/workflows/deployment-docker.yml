@@ -16,17 +16,16 @@ jobs:
       image: node:16
 
     env:
-      MONGODB_CONNECTION_PROTOCOL: mongodb #+srv
-      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017 #cluster0.hhzeppa.mongodb.net
-      MONGODB_USERNAME: root #${{ secrets.MONGODB_USERNAME }}
-      MONGODB_PASSWORD: example #${{ secrets.MONGODB_PASSWORD }}
+      MONGODB_CONNECTION_PROTOCOL: mongodb
+      MONGODB_CLUSTER_ADDRESS: mongodb  # CHANGED: Use service name, not 127.0.0.1
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
       PORT: 8080
     
     services:
       mongodb:
         image: mongo
-        ports:
-          - 27017:27017
+        # REMOVED: ports section - not needed for container-to-container
         env: 
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
@@ -37,69 +36,58 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: docker-containers/node_modules # Cache the actual node_modules folder
+          path: docker-containers/node_modules
           key: ${{ env.CACHE_KEY }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: |
           cd docker-containers
           npm install
-      # - name: Debug MongoDB connection
-      #   run: |
-      #     cd docker-containers
-      #     echo "Checking environment variables:"
-      #     echo "Protocol: $MONGODB_CONNECTION_PROTOCOL"
-      #     echo "Cluster: $MONGODB_CLUSTER_ADDRESS"
-      #     echo "Username: $MONGODB_USERNAME"
-      #     echo "DB Name: $MONGODB_DB_NAME"
-      #     echo "Port: $PORT"
+      - name: Wait for MongoDB
+        run: |
+          apt-get update && apt-get install -y netcat
+          echo "Waiting for MongoDB to be ready..."
+          for i in {1..30}; do
+            if nc -z mongodb 27017; then
+              echo "MongoDB is ready!"
+              break
+            fi
+            echo "Waiting... ($i/30)"
+            sleep 2
+          done
+      - name: Debug MongoDB connection
+        run: |
+          cd docker-containers
+          echo "Testing connection to MongoDB..."
+          cat << 'EOF' > test-connection.js
+          const { MongoClient } = require('mongodb');
           
-      #     # Create a test script using ES module syntax
-      #     cat << 'EOF' > test-connection.mjs
-      #     import { MongoClient } from 'mongodb';
+          async function testConnection() {
+            const username = process.env.MONGODB_USERNAME;
+            const password = process.env.MONGODB_PASSWORD;
+            const cluster = process.env.MONGODB_CLUSTER_ADDRESS;
+            const dbName = process.env.MONGODB_DB_NAME;
+            
+            const connectionString = `mongodb://${username}:${password}@${cluster}:27017/${dbName}?authSource=admin`;
+            console.log('Connecting to:', connectionString.replace(password, '****'));
+            
+            try {
+              const client = new MongoClient(connectionString);
+              await client.connect();
+              console.log('✅ Successfully connected to MongoDB!');
+              await client.close();
+            } catch (err) {
+              console.error('❌ Connection failed:', err.message);
+              process.exit(1);
+            }
+          }
           
-      #     const username = process.env.MONGODB_USERNAME;
-      #     const password = process.env.MONGODB_PASSWORD;
-      #     const cluster = process.env.MONGODB_CLUSTER_ADDRESS;
-      #     const dbName = process.env.MONGODB_DB_NAME;
-      #     const protocol = process.env.MONGODB_CONNECTION_PROTOCOL;
-          
-      #     // Try different connection string formats
-      #     const connectionStrings = [
-      #       `${protocol}://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`,
-      #       `${protocol}://${username}:${password}@${cluster}/${dbName}`,
-      #       `${protocol}://${username}:${password}@${cluster}`,
-      #       `mongodb+srv://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`
-      #     ];
-          
-      #     async function testConnection() {
-      #       for (let i = 0; i < connectionStrings.length; i++) {
-      #         const cs = connectionStrings[i];
-      #         console.log(`\nTesting connection string ${i + 1}:`);
-      #         console.log(cs.replace(password, '****'));
-              
-      #         try {
-      #           const client = new MongoClient(cs);
-      #           await client.connect();
-      #           console.log('✅ CONNECTION SUCCESSFUL!');
-      #           await client.close();
-      #           return true;
-      #         } catch (err) {
-      #           console.log('❌ Connection failed:', err.message);
-      #         }
-      #       }
-      #       return false;
-      #     }
-          
-      #     testConnection().then(success => {
-      #       if (!success) process.exit(1);
-      #     });
-      #     EOF
-          
-      #     node test-connection.mjs
+          testConnection();
+          EOF
+          node test-connection.js
       - name: Run server
         run: |
           cd docker-containers
-          npm start & npx wait-on http://127.0.0.1:$PORT # requires MongoDB Atlas to accept requests from anywhere!
+          npm start & npx wait-on http://127.0.0.1:$PORT
       - name: Run tests
         run: |
           cd docker-containers
@@ -107,6 +95,7 @@ jobs:
       - name: Output information
         run: |
           echo "MONGODB_USERNAME: $MONGODB_USERNAME"
+  
   deploy:
     needs: test
     runs-on: ubuntu-latest
