@@ -40,9 +40,9 @@ jobs:
           echo "DB Name: $MONGODB_DB_NAME"
           echo "Port: $PORT"
           
-          # Create a simple test script - FIXED EOF SYNTAX
-          cat << 'EOF' > test-connection.js
-          const { MongoClient } = require('mongodb');
+          # Create a test script using ES module syntax
+          cat << 'EOF' > test-connection.mjs
+          import { MongoClient } from 'mongodb';
           
           const username = process.env.MONGODB_USERNAME;
           const password = process.env.MONGODB_PASSWORD;
@@ -82,7 +82,7 @@ jobs:
           });
           EOF
           
-          node test-connection.js
+          node test-connection.mjs
       - name: Run server
         run: |
           cd docker-containers
