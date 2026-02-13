@@ -27,11 +27,11 @@ jobs:
           key: ${{ env.CACHE_KEY }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: |
-          cd docker-conainers
+          cd docker-containers
           npm ci
       - name: Run server
         run: |
-          cd docker-conainers
+          cd docker-containers
           npm start & npx wait-on http://127.0.0.1:$PORT # requires MongoDB Atlas to accept requests from anywhere!
       - name: Run tests
         run: |
