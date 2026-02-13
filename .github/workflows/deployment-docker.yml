@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd docker-containers
-          npm ci
+          npm install
       - name: Run server
         run: |
           cd docker-containers
