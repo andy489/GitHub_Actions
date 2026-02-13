@@ -54,36 +54,6 @@ jobs:
             echo "Waiting... ($i/30)"
             sleep 2
           done
-      - name: Debug MongoDB connection
-        run: |
-          cd docker-containers
-          echo "Testing connection to MongoDB..."
-          cat << 'EOF' > test-connection.js
-          const { MongoClient } = require('mongodb');
-          
-          async function testConnection() {
-            const username = process.env.MONGODB_USERNAME;
-            const password = process.env.MONGODB_PASSWORD;
-            const cluster = process.env.MONGODB_CLUSTER_ADDRESS;
-            const dbName = process.env.MONGODB_DB_NAME;
-            
-            const connectionString = `mongodb://${username}:${password}@${cluster}:27017/${dbName}?authSource=admin`;
-            console.log('Connecting to:', connectionString.replace(password, '****'));
-            
-            try {
-              const client = new MongoClient(connectionString);
-              await client.connect();
-              console.log('✅ Successfully connected to MongoDB!');
-              await client.close();
-            } catch (err) {
-              console.error('❌ Connection failed:', err.message);
-              process.exit(1);
-            }
-          }
-          
-          testConnection();
-          EOF
-          node test-connection.js
       - name: Run server
         run: |
           cd docker-containers
