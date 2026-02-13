@@ -17,7 +17,7 @@ jobs:
 
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb
-      MONGODB_CLUSTER_ADDRESS: mongodb  # CHANGED: Use service name, not 127.0.0.1
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017  
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
       PORT: 8080
@@ -25,7 +25,8 @@ jobs:
     services:
       mongodb:
         image: mongo
-        # REMOVED: ports section - not needed for container-to-container
+        ports:
+          - 27017:27017
         env: 
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
