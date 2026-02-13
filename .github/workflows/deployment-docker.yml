@@ -17,14 +17,14 @@ jobs:
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
-      
+
     steps:
       - name: Get Code
         uses: actions/checkout@v3
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: docker-containers/node_modules # Cache the actual node_modules folder
           key: ${{ env.CACHE_KEY }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: |
@@ -36,7 +36,7 @@ jobs:
           npm start & npx wait-on http://127.0.0.1:$PORT # requires MongoDB Atlas to accept requests from anywhere!
       - name: Run tests
         run: |
-          cd docker-conainers
+          cd docker-containers
           npm test
       - name: Output information
         run: |
