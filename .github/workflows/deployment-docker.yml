@@ -14,7 +14,6 @@ jobs:
     
     container: 
       image: node:16
-      env: 
 
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb+srv
