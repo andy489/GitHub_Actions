@@ -94,8 +94,6 @@ jobs:
       - name: Print deploy output
         run: |
           echo "Deploy job status: ${{ needs.deploy.result }}"
-          echo "Deploy output value: ${{ needs.deploy.outputs.result || 'No output set' }}"
-          echo "If you see 'No output set', the deploy job might have failed before setting output"
   report:
     needs: [lint, deploy]
     runs-on: ubuntu-latest  
