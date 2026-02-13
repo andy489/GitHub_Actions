@@ -41,59 +41,59 @@ jobs:
         run: |
           cd docker-containers
           npm install
-      - name: Debug MongoDB connection
-        run: |
-          cd docker-containers
-          echo "Checking environment variables:"
-          echo "Protocol: $MONGODB_CONNECTION_PROTOCOL"
-          echo "Cluster: $MONGODB_CLUSTER_ADDRESS"
-          echo "Username: $MONGODB_USERNAME"
-          echo "DB Name: $MONGODB_DB_NAME"
-          echo "Port: $PORT"
+      # - name: Debug MongoDB connection
+      #   run: |
+      #     cd docker-containers
+      #     echo "Checking environment variables:"
+      #     echo "Protocol: $MONGODB_CONNECTION_PROTOCOL"
+      #     echo "Cluster: $MONGODB_CLUSTER_ADDRESS"
+      #     echo "Username: $MONGODB_USERNAME"
+      #     echo "DB Name: $MONGODB_DB_NAME"
+      #     echo "Port: $PORT"
           
-          # Create a test script using ES module syntax
-          cat << 'EOF' > test-connection.mjs
-          import { MongoClient } from 'mongodb';
+      #     # Create a test script using ES module syntax
+      #     cat << 'EOF' > test-connection.mjs
+      #     import { MongoClient } from 'mongodb';
           
-          const username = process.env.MONGODB_USERNAME;
-          const password = process.env.MONGODB_PASSWORD;
-          const cluster = process.env.MONGODB_CLUSTER_ADDRESS;
-          const dbName = process.env.MONGODB_DB_NAME;
-          const protocol = process.env.MONGODB_CONNECTION_PROTOCOL;
+      #     const username = process.env.MONGODB_USERNAME;
+      #     const password = process.env.MONGODB_PASSWORD;
+      #     const cluster = process.env.MONGODB_CLUSTER_ADDRESS;
+      #     const dbName = process.env.MONGODB_DB_NAME;
+      #     const protocol = process.env.MONGODB_CONNECTION_PROTOCOL;
           
-          // Try different connection string formats
-          const connectionStrings = [
-            `${protocol}://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`,
-            `${protocol}://${username}:${password}@${cluster}/${dbName}`,
-            `${protocol}://${username}:${password}@${cluster}`,
-            `mongodb+srv://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`
-          ];
+      #     // Try different connection string formats
+      #     const connectionStrings = [
+      #       `${protocol}://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`,
+      #       `${protocol}://${username}:${password}@${cluster}/${dbName}`,
+      #       `${protocol}://${username}:${password}@${cluster}`,
+      #       `mongodb+srv://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority`
+      #     ];
           
-          async function testConnection() {
-            for (let i = 0; i < connectionStrings.length; i++) {
-              const cs = connectionStrings[i];
-              console.log(`\nTesting connection string ${i + 1}:`);
-              console.log(cs.replace(password, '****'));
+      #     async function testConnection() {
+      #       for (let i = 0; i < connectionStrings.length; i++) {
+      #         const cs = connectionStrings[i];
+      #         console.log(`\nTesting connection string ${i + 1}:`);
+      #         console.log(cs.replace(password, '****'));
               
-              try {
-                const client = new MongoClient(cs);
-                await client.connect();
-                console.log('✅ CONNECTION SUCCESSFUL!');
-                await client.close();
-                return true;
-              } catch (err) {
-                console.log('❌ Connection failed:', err.message);
-              }
-            }
-            return false;
-          }
+      #         try {
+      #           const client = new MongoClient(cs);
+      #           await client.connect();
+      #           console.log('✅ CONNECTION SUCCESSFUL!');
+      #           await client.close();
+      #           return true;
+      #         } catch (err) {
+      #           console.log('❌ Connection failed:', err.message);
+      #         }
+      #       }
+      #       return false;
+      #     }
           
-          testConnection().then(success => {
-            if (!success) process.exit(1);
-          });
-          EOF
+      #     testConnection().then(success => {
+      #       if (!success) process.exit(1);
+      #     });
+      #     EOF
           
-          node test-connection.mjs
+      #     node test-connection.mjs
       - name: Run server
         run: |
           cd docker-containers
