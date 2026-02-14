@@ -1,8 +1,9 @@
 name: Deployment (Custom Actions)
+# on:
+#   push:
+#     branches:
+#       - main
 on:
-  push:
-    branches:
-      - main
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -78,6 +79,9 @@ jobs:
           bucket: gha-custom-action-hosting
           dist-folder: ./dist
           bucket-region: us-east-2
+      - name: Output information
+        run: |
+          echo "Live URL: ${{ steps.deploy.outputs.website-url }}"
           
   # information:
   #   runs-on: ubuntu-latest
